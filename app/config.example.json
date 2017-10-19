@@ -1,0 +1,6 @@
+{
+  "Host":"host:port",
+  "Username":"guest",
+  "Password":"guest",
+  "Database":"YOUR_COLLECTION"
+}

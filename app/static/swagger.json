@@ -1,0 +1,145 @@
+{
+  "consumes": [
+    "application/json",
+    "application/xml"
+  ],
+  "produces": [
+    "application/json",
+    "application/xml"
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "the purpose of this application is to provide an application\nthat is using plain go code to define an API\n\nThis should demonstrate all the possible comment annotations\nthat are available to turn go code into a fully compliant swagger 2.0 spec",
+    "title": "Baldrick API.",
+    "termsOfService": "there are no TOS at this moment, use at your own risk we take no responsibility",
+    "contact": {
+      "name": "Robrotheram",
+      "url": "https://robrotheram.com",
+      "email": "robrotheram@gmail.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "http://opensource.org/licenses/MIT"
+    },
+    "version": "0.0.1"
+  },
+  "host": "192.168.99.100:8080",
+  "basePath": "/api/v1",
+  "paths": {
+    "/bot/": {
+      "post": {
+        "description": "Get list of something",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http"
+        ],
+        "operationId": "testthing",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/Bot"
+          },
+          "500": {
+            "$ref": "#/responses/errorResponse"
+          }
+        }
+      }
+    },
+    "/bot/{BotID}": {
+      "get": {
+        "description": "Get list of something",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http"
+        ],
+        "operationId": "listParams",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "BotID",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/Bot"
+          },
+          "500": {
+            "$ref": "#/responses/errorResponse"
+          }
+        }
+      }
+    },
+    "/bots": {
+      "get": {
+        "description": "This will show all available pets by default.\nYou can get the pets that are out of stock",
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http"
+        ],
+        "summary": "Get list of something",
+        "operationId": "test",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/Bot"
+          },
+          "500": {
+            "$ref": "#/responses/errorResponse"
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "Bot": {
+      "description": "A ValidationError is an error that is used when the required input fails validation.",
+      "headers": {
+        "BotName": {
+          "type": "string"
+        },
+        "Type": {
+          "type": "string"
+        }
+      }
+    },
+    "errorResponse": {
+      "description": "A ValidationError is an error that is used when the required input fails validation.",
+      "headers": {
+        "ErrorCode": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "ErrorMessage": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "x-meta-array": [
+    "value1",
+    "value2"
+  ],
+  "x-meta-array-obj": [
+    {
+      "name": "obj",
+      "value": "field"
+    }
+  ],
+  "x-meta-value": "value"
+}
