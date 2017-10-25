@@ -65,6 +65,8 @@ func createRouters() *mux.Router {
 	api_handlers.CreateBotHandlers("/api/v1",router)
 	api_handlers.CreateRuleHandlers("/api/v1",router)
 	api_handlers.CreateUserHandlers("/api/v1",router)
+	api_handlers.CreateChanelHandlers("/api/v1",router)
+
 	router.HandleFunc("/", api_handlers.TestHandler)
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
 

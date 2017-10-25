@@ -104,6 +104,101 @@
           }
         }
       }
+    },
+    "/channel": {
+      "get": {
+        "description": "This will show all available pets by default.\nYou can get the pets that are out of stock",
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http"
+        ],
+        "summary": "Get list of something",
+        "operationId": "test",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/Bot"
+          },
+          "500": {
+            "$ref": "#/responses/errorResponse"
+          }
+        }
+      }
+    },
+    "/channel/": {
+      "post": {
+        "description": "Get list of something",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http"
+        ],
+        "operationId": "testthing",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/Bot"
+          },
+          "500": {
+            "$ref": "#/responses/errorResponse"
+          }
+        }
+      }
+    },
+    "/channel/{ChannelID}": {
+      "get": {
+        "description": "Get list of something",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http"
+        ],
+        "operationId": "listParams",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "BotID",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/Bot"
+          },
+          "500": {
+            "$ref": "#/responses/errorResponse"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Rule": {
+      "type": "object",
+      "properties": {
+        "Function": {
+          "type": "string"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "Paramaters": {
+          "type": "string"
+        },
+        "Prifix": {
+          "type": "string"
+        }
+      },
+      "x-go-package": "github.com/robrotheram/baldrick_engine/app/db"
     }
   },
   "responses": {
@@ -113,8 +208,14 @@
         "BotName": {
           "type": "string"
         },
-        "Type": {
+        "Channel": {
           "type": "string"
+        },
+        "Rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Rule"
+          }
         }
       }
     },

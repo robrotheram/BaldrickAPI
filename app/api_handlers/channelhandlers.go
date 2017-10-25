@@ -6,21 +6,23 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"github.com/robrotheram/baldrick_engine/app/db"
+	"github.com/robrotheram/baldrick_engine/app/messages"
 	"io/ioutil"
+	"time"
 	"gopkg.in/mgo.v2/bson"
 )
 
-var members = []db.Bot{}
+var channels = []db.Channel{}
 
-func CreateBotHandlers(base string, router *mux.Router) *mux.Router  {
+func CreateChanelHandlers(base string, router *mux.Router) *mux.Router  {
 	sub := router.PathPrefix(base).Subrouter()
-	sub.Methods("GET").Path("/bots").HandlerFunc(getBots)
-	sub.Methods("GET").Path("/bot/{botid}").HandlerFunc(getBot)
-	sub.Methods("POST").Path("/bot").HandlerFunc(addBot)
+	sub.Methods("GET").Path("/channel").HandlerFunc(getChannels)
+	sub.Methods("GET").Path("/channel/{channelid}").HandlerFunc(getChannel)
+	sub.Methods("POST").Path("/channel").HandlerFunc(addChannel)
 	return sub;
 }
 
-// swagger:route GET /bots test
+// swagger:route GET /channel test
 //
 // Get list of something
 //
@@ -35,10 +37,10 @@ func CreateBotHandlers(base string, router *mux.Router) *mux.Router  {
 //     Responses:
 //       500: errorResponse
 //       200: Bot
-func getBots(w http.ResponseWriter, _ *http.Request) {
+func getChannels(w http.ResponseWriter, _ *http.Request) {
 	// Query All
-	c := db.Session.DB("YOUR_DB").C("BOT")
-	var results []db.Bot;
+	c := db.Session.DB("YOUR_DB").C("Channels")
+	var results []db.Channel;
 	err := c.Find(bson.M{}).All(&results)
 
 	if err != nil {
@@ -51,7 +53,7 @@ func getBots(w http.ResponseWriter, _ *http.Request) {
 
 }
 
-// swagger:route GET /bot/{BotID} listParams
+// swagger:route GET /channel/{ChannelID} listParams
 //
 // Get list of something
 //
@@ -67,12 +69,12 @@ func getBots(w http.ResponseWriter, _ *http.Request) {
 //       500: errorResponse
 //       200: Bot
 
-func getBot(w http.ResponseWriter, request *http.Request) {
+func getChannel(w http.ResponseWriter, request *http.Request) {
 	vars := mux.Vars(request)
-	botid := vars["botid"]
+	botid := vars["channelid"]
 
-	c := db.Session.DB("YOUR_DB").C("BOT")
-	var results []db.Bot;
+	c := db.Session.DB("YOUR_DB").C("Channels")
+	var results []db.Channel;
 	fmt.Println(botid)
 	err := c.Find(bson.M{"name":botid}).All(&results)
 
@@ -84,7 +86,7 @@ func getBot(w http.ResponseWriter, request *http.Request) {
 		panic(err)
 	}
 }
-// swagger:route POST  /bot/ testthing
+// swagger:route POST  /channel/ testthing
 //
 // Get list of something
 //
@@ -99,12 +101,11 @@ func getBot(w http.ResponseWriter, request *http.Request) {
 //     Responses:
 //       500: errorResponse
 //       200: Bot
-func addBot(w http.ResponseWriter, request *http.Request) {
+func addChannel(w http.ResponseWriter, request *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	var m db.Bot
+	var m db.Channel
 	b, _ := ioutil.ReadAll(request.Body)
 	json.Unmarshal(b, &m)
-	members = append(members, m)
-	j, _ := json.Marshal(members)
-	w.Write(j)
+	m.StartTime = time.Unix(time.Now().Unix(), 0).String()
+	messages.CreateChannel(m)
 }

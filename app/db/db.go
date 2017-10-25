@@ -3,7 +3,7 @@ package db
 import (
 	"gopkg.in/mgo.v2"
 	"github.com/robrotheram/baldrick_engine/app/configuration"
-//	"gopkg.in/mgo.v2/bson"
+	"gopkg.in/mgo.v2/bson"
 	"time"
 	"fmt"
 )
@@ -11,7 +11,8 @@ import (
 // swagger:response Bot
 type Bot struct{
 	BotName   	string	    `bson:"name"`
-	Type   		string    	`bson:"type"`
+	Channel		string    	`bson:"channels"`
+	Rules   	[]Rule    	`bson:"rules"`
 }
 
 type User struct {
@@ -24,17 +25,20 @@ type User struct {
 
 type Rule struct {
 	Name			string    	`bson:"name"`
-	Type			string    	`bson:"type"`
-	Formatter 		string    	`bson:"formatter"`
-
+	Prifix			string    	`bson:"prifix"`
+	Function		string    	`bson:"function"`
+	Paramaters		string    	`bson:"paramaters"`
 }
 
-func NewRule(name, typeID, formatter string) Rule {
-	return Rule{
-		Name:   name,
-		Type: typeID,
-		Formatter: formatter,
-	}
+func (r*Rule) Process() string {
+	return "hello this is a test";
+}
+
+
+type Channel struct {
+	Name		string	 		`bson:"name"`
+	Description string 			`bson:"description"`
+	StartTime	string			`bson:"start_time"`
 }
 
 func NewUser(name, typeID, formatter string) User {
@@ -49,10 +53,29 @@ func NewUser(name, typeID, formatter string) User {
 	}
 }
 
-func NewBot(name, typeID string) Bot {
+func NewBot() Bot {
+
+	r1 := Rule{
+		Name:   "testName",
+		Prifix: "!broadcast",
+		Function: "hello",
+		Paramaters: "",
+	}
+	r2 := Rule{
+		Name:   "NewRule",
+		Prifix: "!hello",
+		Function: "bob",
+		Paramaters: "",
+	}
+
+
+
+	rules := []Rule{r1,r2}
+
 	return Bot{
-		BotName: name,
-		Type: typeID,
+		BotName: "BotName",
+		Channel: "discord",
+		Rules:	rules,
 	}
 }
 
@@ -84,15 +107,29 @@ func CreateSession(){
 	}
 	Session = session
 }
+
 func GenerateBot(){
 	c := Session.DB("YOUR_DB").C("BOT")
-	bot := NewBot("Test","testID")
+	bot := NewBot()
 	if err := c.Insert(bot); err != nil {
 		panic(err)
 	}
 	fmt.Println("Inserted a new BOT");
 }
 
+func GetRulesFromChannel (channel string) []Rule {
+	c := Session.DB("YOUR_DB").C("BOT")
+	var result []Bot;
+	err := c.Find(bson.M{"channels":channel}).All(&result)
+	if err != nil {
+		panic(err)
+	}
+	if (len(result) > 0){
+		return result[0].Rules;
+	} else {
+		return []Rule{}
+	}
+}
 
 func Close()  {
 	Session.Close();
