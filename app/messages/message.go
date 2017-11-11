@@ -1,7 +1,7 @@
 package messages
 import (
 	"log"
-	"time"
+
 	"fmt"
 	"strings"
 	"github.com/streadway/amqp"
@@ -36,55 +36,84 @@ func findARule(rules []db.Rule, msg string) db.Rule {
 	return db.Rule{};
 }
 
+var q amqp.Queue;
+var conn *amqp.Connection;
+var ch *amqp.Channel;
+var err error;
 
-func CreateListener(que string) {
-	conn, err := amqp.Dial("amqp://guest:guest@192.168.99.100:5672/")
+func CloseConnect()  {
+	defer conn.Close()
+	defer ch.Close()
+
+}
+
+func OpenConnect(){
+	conn, err = amqp.Dial("amqp://guest:guest@192.168.99.100:5672/")
 	failOnError(err, "Failed to connect to RabbitMQ")
-	ch, err := conn.Channel()
+
+	ch, err = conn.Channel()
 	failOnError(err, "Failed to open a channel")
+	err = ch.ExchangeDeclare(
+		"logs_direct", // name
+		"direct",      // type
+		true,          // durable
+		false,         // auto-deleted
+		false,         // internal
+		false,         // no-wait
+		nil,           // arguments
+	)
+	failOnError(err, "Failed to declare an exchange")
 
-
-	q, err := ch.QueueDeclare(
-		que, // name
-		false,   // durable
-		false,   // delete when unused
-		false,   // exclusive
-		false,   // no-wait
-		nil,     // arguments
+	q, err = ch.QueueDeclare(
+		"",    // name
+		false, // durable
+		false, // delete when usused
+		true,  // exclusive
+		false, // no-wait
+		nil,   // arguments
 	)
 	failOnError(err, "Failed to declare a queue")
 
+}
+
+
+
+
+
+func CreateListener(que string) {
+	rules := db.GetRulesFromChannel(que); // []rules
+	log.Printf("Binding queue %s to exchange %s with routing key %s", q.Name, "logs_direct", que)
+	err = ch.QueueBind(
+		q.Name,        // queue name
+		que,             // routing key
+		"logs_direct", // exchange
+		false,
+		nil)
+	failOnError(err, "Failed to bind a queue")
+
+	msgs, err := ch.Consume(
+	q.Name, // queue
+	"",     // consumer
+	true,   // auto ack
+	false,  // exclusive
+	false,  // no local
+	false,  // no wait
+	nil,    // args
+	)
+	failOnError(err, "Failed to register a consumer")
 
 	go func() {
-		rules := db.GetRulesFromChannel(que); // []rules
-		msgs, err := ch.Consume(
-			q.Name, // queue
-			"",     // consumer
-			true,   // auto-ack
-			false,  // exclusive
-			false,  // no-local
-			false,  // no-wait
-			nil,    // args
-		)
-		failOnError(err, "Failed to register a consumer")
-		for{
-			log.Printf("Checking for messages");
-			for d := range msgs {
-				log.Printf("Worker: %s | Received a message: %s",que, d.Body)
-				rule := findARule(rules, string(d.Body[:]))
-				if ((db.Rule{}) != rule ) {
-					output := rule.Process();
-					log.Printf("Worker: %s | RULE PROCESS: %s",que, output)
-				} else {
-					log.Printf("Worker: %s | RULE PROCESS: NO RULE FOUND",que)
-				}
-
-
+		for d := range msgs {
+			log.Printf(" [x] %s", d.Body)
+			log.Printf("Worker: %s | Received a message: %s",q.Name, d.Body)
+			rule := findARule(rules, string(d.Body[:]))
+			if (rule.Function != "" ) {
+				output := rule.Process();
+				log.Printf("Worker: %s | RULE PROCESS: %s",q.Name, output)
+			} else {
+				log.Printf("Worker: %s | RULE PROCESS: NO RULE FOUND",q.Name)
 			}
-			time.Sleep(time.Second * 5)
 		}
-		ch.Close()
-		conn.Close()
 	}()
-
+	log.Printf(" [*] Waiting for logs. To exit press CTRL+C")
 }

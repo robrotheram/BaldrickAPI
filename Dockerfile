@@ -8,16 +8,18 @@ WORKDIR /go/src/github.com/robrotheram/baldrick_engine/app
 
 RUN go get ./
 RUN go build
-RUN go get -u github.com/go-swagger/go-swagger/cmd/swagger
+#RUN go get -u github.com/go-swagger/go-swagger/cmd/swagger
 
 
 CMD if [ ${APP_ENV} = production ]; \
 	then \
 	app; \
 	else \
-	swagger generate spec -o ./static/swagger.json; \
-	go get github.com/pilu/fresh && app \
+#	swagger generate spec -o ./static/swagger.json; \
+	go get github.com/pilu/fresh && app "MethodFoo" 42 "boo %s"  \
 	fresh; \
-	fi
+	fi; \
+	bash
+
 
 EXPOSE 8080

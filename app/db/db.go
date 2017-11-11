@@ -3,6 +3,7 @@ package db
 import (
 	"gopkg.in/mgo.v2"
 	"github.com/robrotheram/baldrick_engine/app/configuration"
+	"github.com/robrotheram/baldrick_engine/app/rules"
 	"gopkg.in/mgo.v2/bson"
 	"time"
 	"fmt"
@@ -26,11 +27,14 @@ type User struct {
 type Rule struct {
 	Name			string    	`bson:"name"`
 	Prifix			string    	`bson:"prifix"`
+	Channel  		[]string    	`bson:"channel"`
 	Function		string    	`bson:"function"`
 	Paramaters		string    	`bson:"paramaters"`
 }
 
 func (r*Rule) Process() string {
+	fmt.Println(r.Function)
+	rules.Invoke(r.Function)
 	return "hello this is a test";
 }
 
@@ -58,13 +62,14 @@ func NewBot() Bot {
 	r1 := Rule{
 		Name:   "testName",
 		Prifix: "!broadcast",
-		Function: "hello",
+		Function: "MethodBar",
+		Channel: []string{"broadcast"},
 		Paramaters: "",
 	}
 	r2 := Rule{
 		Name:   "NewRule",
 		Prifix: "!hello",
-		Function: "bob",
+		Function: "MethodBar",
 		Paramaters: "",
 	}
 
@@ -134,3 +139,4 @@ func GetRulesFromChannel (channel string) []Rule {
 func Close()  {
 	Session.Close();
 }
+

@@ -107,5 +107,8 @@ func addChannel(w http.ResponseWriter, request *http.Request) {
 	b, _ := ioutil.ReadAll(request.Body)
 	json.Unmarshal(b, &m)
 	m.StartTime = time.Unix(time.Now().Unix(), 0).String()
-	messages.CreateChannel(m)
+	go func() {
+		messages.CreateChannel(m)
+	}()
+
 }
