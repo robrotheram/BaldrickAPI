@@ -58,10 +58,8 @@ import (
 	"github.com/gorilla/handlers"
 	"net/http"
 	"strings"
-
 	//"github.com/SermoDigital/jose/crypto"
 	//"github.com/SermoDigital/jose/jws"
-
 )
 
 var (
