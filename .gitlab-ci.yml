@@ -1,5 +1,6 @@
 stages:
   - build
+  - test
 
 
 
@@ -15,3 +16,8 @@ build_targeting:
   script:
     - docker build -t gitlab.alpha.dev:4567/robrotheram/baldrick .
     - docker push gitlab.alpha.dev:4567/robrotheram/baldrick
+
+run_targeting:
+  stage: test
+  script:
+    - docker run -p 8088:8080 gitlab.alpha.dev:4567/robrotheram/baldrick
