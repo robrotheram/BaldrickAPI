@@ -1,0 +1,18 @@
+image: docker:latest
+
+stages:
+- build
+
+
+variables:
+  CONTAINER_TEST_IMAGE: gitlab.alpha.dev/robrotheram/baldrick
+
+before_script:
+  - docker info
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN gitlab.alpha.dev/robrotheram/baldrick
+
+build_targeting:
+  stage: build
+  script:
+    - docker build -t $CONTAINER_TEST_IMAGE:$CI_COMMIT_REF_NAME .
+    - docker push $CONTAINER_TEST_IMAGE:$CI_COMMIT_REF_NAME

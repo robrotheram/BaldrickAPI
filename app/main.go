@@ -59,8 +59,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/SermoDigital/jose/crypto"
-	"github.com/SermoDigital/jose/jws"
+	//"github.com/SermoDigital/jose/crypto"
+	//"github.com/SermoDigital/jose/jws"
 
 )
 
@@ -123,7 +123,7 @@ func failOnError(err error, msg string) {
 func main() {
 	// Parse the command-line flags.
 	test()
-	testJWE();
+	//testJWE();
 
 	flag.Parse()
 	configuration.ReadConfig("config.json")
