@@ -2,8 +2,6 @@ stages:
   - build
   - test
 
-
-
 variables:
   CONTAINER_TEST_IMAGE: gitlab.alpha.dev:4567/robrotheram/baldrick
 
