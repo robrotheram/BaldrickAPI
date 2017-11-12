@@ -1,5 +1,6 @@
 stages:
-- build
+  - build
+  - package
 
 
 variables:
@@ -14,4 +15,7 @@ build_targeting:
   script:
     - docker build -t $CONTAINER_TEST_IMAGE:$CI_COMMIT_REF_NAME .
 
- 
+publish_server:
+   stage: package
+   script:
+       - docker push $CONTAINER_TEST_IMAGE:$CI_COMMIT_REF_NAME
