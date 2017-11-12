@@ -7,9 +7,11 @@ variables:
 
 before_script:
   - docker info
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN gitlab.alpha.dev/robrotheram/baldrick
  
 build_targeting:
   stage: build
   script:
     - docker build -t $CONTAINER_TEST_IMAGE:$CI_COMMIT_REF_NAME .
+
  
