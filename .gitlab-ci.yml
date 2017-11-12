@@ -1,6 +1,6 @@
 stages:
   - build
-  - package
+
 
 
 variables:
@@ -8,14 +8,10 @@ variables:
 
 before_script:
   - docker info
-  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN gitlab.alpha.dev/robrotheram/baldrick
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN gitlab.alpha.dev
  
 build_targeting:
   stage: build
   script:
-    - docker build -t $CONTAINER_TEST_IMAGE:$CI_COMMIT_REF_NAME .
-
-publish_server:
-   stage: package
-   script:
-       - docker push $CONTAINER_TEST_IMAGE:$CI_COMMIT_REF_NAME
+    - docker build -t gitlab.alpha.dev/robrotheram/baldrick .
+    - docker push gitlab.alpha.dev/robrotheram/baldrick
