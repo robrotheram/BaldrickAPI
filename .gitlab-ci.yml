@@ -4,14 +4,14 @@ stages:
 
 
 variables:
-  CONTAINER_TEST_IMAGE: gitlab.alpha.dev/robrotheram/baldrick
+  CONTAINER_TEST_IMAGE: gitlab.alpha.dev:4567/robrotheram/baldrick
 
 before_script:
   - docker info
-  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN gitlab.alpha.dev
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN gitlab.alpha.dev:4567
  
 build_targeting:
   stage: build
   script:
-    - docker build -t gitlab.alpha.dev/robrotheram/baldrick .
-    - docker push gitlab.alpha.dev/robrotheram/baldrick
+    - docker build -t gitlab.alpha.dev:4567/robrotheram/baldrick .
+    - docker push gitlab.alpha.dev:4567/robrotheram/baldrick
