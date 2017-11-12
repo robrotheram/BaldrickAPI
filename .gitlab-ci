@@ -2,6 +2,7 @@ image: docker:latest
 
 stages:
 - build
+- publish
 
 
 variables:
@@ -11,8 +12,13 @@ before_script:
   - docker info
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN gitlab.alpha.dev/robrotheram/baldrick
 
-build_targeting:
+build_server:
   stage: build
   script:
     - docker build -t $CONTAINER_TEST_IMAGE:$CI_COMMIT_REF_NAME .
     - docker push $CONTAINER_TEST_IMAGE:$CI_COMMIT_REF_NAME
+
+publish_server
+    stage: publish
+    script:
+        - docker push $CONTAINER_TEST_IMAGE:$CI_COMMIT_REF_NAME
