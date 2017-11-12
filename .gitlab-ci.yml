@@ -1,0 +1,15 @@
+stages:
+- build
+
+
+variables:
+  CONTAINER_TEST_IMAGE: gitlab.alpha.dev/robrotheram/baldrick
+
+before_script:
+  - docker info
+ 
+build_targeting:
+  stage: build
+  script:
+    - docker build -t $CONTAINER_TEST_IMAGE:$CI_COMMIT_REF_NAME .
+ 
