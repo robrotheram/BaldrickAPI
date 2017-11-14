@@ -1,0 +1,6 @@
+{
+  "Host":"192.168.99.100:27017",
+  "Username":"guest",
+  "Password":"guest",
+  "Database":"YOUR_COLLECTION"
+}

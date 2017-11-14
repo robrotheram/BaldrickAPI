@@ -1,7 +1,6 @@
 package messages
 import (
 	"log"
-
 	"fmt"
 	"strings"
 	"github.com/streadway/amqp"
@@ -75,10 +74,6 @@ func OpenConnect(){
 	failOnError(err, "Failed to declare a queue")
 
 }
-
-
-
-
 
 func CreateListener(que string) {
 	rules := db.GetRulesFromChannel(que); // []rules
